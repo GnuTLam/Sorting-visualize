@@ -1,36 +1,97 @@
-#include "Sort.h"
+﻿#include "Sort.h"
 #include <wx/wx.h>
+void change_colour_red(wxPanel*& a, wxPanel*& b) {
+    a->SetBackgroundColour(wxColour(0xe8, 0x35, 0x50));
+    b->SetBackgroundColour(wxColour(0xe8, 0x35, 0x50));
+    a->Refresh();
+    a->Update();
+    b->Refresh();
+    b->Update();
+    wxMilliSleep(500);
+}
 
-void swap_panel(wxPanel*& a, wxPanel*& b) {
-    wxSize sizeA = a->GetClientSize();
-    wxSize sizeB = b->GetClientSize();
+void change_colour_green(wxPanel*& a, wxPanel*& b) {
+    a->SetBackgroundColour(wxColour(0xe8, 0x35, 0x50));
+    b->SetBackgroundColour(wxColour(0xe8, 0x35, 0x50));
+    a->Refresh();
+    a->Update();
+    b->Refresh();
+    b->Update();
+    wxMilliSleep(250);
+}
+
+void change_colour_nor(wxPanel*& a, wxPanel*& b) {
+    a->SetBackgroundColour(wxColour(22, 26, 48));
+    b->SetBackgroundColour(wxColour(22, 26, 48));
+    a->Refresh();
+    a->Update();
+    b->Refresh();
+    b->Update();
+}
+
+
+
+void swap_panel(wxPanel* &a, wxPanel* &b, int indexa, int indexb) {
+    int plus = abs(indexa - indexb);
+    change_colour_red(a, b);
     wxPoint pointA = a->GetPosition();
     wxPoint pointB = b->GetPosition();
-
-    int hA = sizeA.GetHeight();
-    int hB = sizeB.GetHeight();
-    int wA = sizeA.GetWidth();
-    int wB = sizeB.GetWidth();
-
     int xA = pointA.x;
     int yA = pointA.y;
     int xB = pointB.x;
     int yB = pointB.y;
-    a->SetSize(wxSize(0, 0));
-    a->SetPosition(wxPoint(xA, yB));
-    a->SetSize(wxSize(wA, hB));
-
-    b->SetSize(wxSize(0, 0));
-    b->SetPosition(wxPoint(xB, yA));
-    b->SetSize(wxSize(wB, hA));   
-    //wxMilliSleep(50);
+    int sA = xA, sB = xB;
+    
+    if (sA > sB) {
+        int dis = sA - sB;
+        for (int i = 0; i < dis; i += plus) {
+            xA -= plus;
+            xB += plus;
+            if (xA < sB) {
+                a->SetPosition(wxPoint(sB, yA));
+                a->Refresh();
+                b->SetPosition(wxPoint(sA, yB));
+                b->Refresh();
+                break;
+            }
+            a->SetPosition(wxPoint(xA, yA));
+            a->Refresh();
+            b->SetPosition(wxPoint(xB, yB));
+            b->Refresh();
+            wxMilliSleep(20);
+        }
+        
+    }
+    if(sB > sA) {
+        int dis = sB - sA;
+        for (int i = 0; i < dis; i += plus) {
+            xA += plus;
+            xB -= plus;
+            if (xA > sB) {
+                a->SetPosition(wxPoint(sB, yA));
+                a->Refresh();
+                b->SetPosition(wxPoint(sA, yB));
+                b->Refresh();
+                break;
+            }
+            a->SetPosition(wxPoint(xA, yA));
+            a->Refresh();
+            b->SetPosition(wxPoint(xB, yB));
+            b->Refresh();
+            wxMilliSleep(20);
+        }
+    }
+    std::swap(a, b);
+    change_colour_nor(a, b);
+    wxMilliSleep(100);
 }
+
 
 void Sort::Insertion_Sort(std::vector<wxPanel*> &a) {
     for (int i = 1; i < a.size(); ++i) {
         int pos = i;
-        while (pos > 0 && a[pos]->GetClientSize().GetHeight() < a[pos - 1]->GetClientSize().GetHeight()) {
-            swap_panel(a[pos], a[pos - 1]);
+        while (pos > 0 && a[pos]->GetClientSize().GetHeight() < a[pos - 1]->GetClientSize().GetHeight()) {          
+            swap_panel(a[pos], a[pos - 1],pos, pos-1);
             pos--;
         }
     }
@@ -43,14 +104,14 @@ void Sort::Selection_Sort(std::vector<wxPanel*> &a) {
         for (int j = i + 1; j < a.size(); ++j) {
             if (a[j]->GetClientSize().GetHeight() < a[min]->GetClientSize().GetHeight()) min = j;
         }
-        swap_panel(a[i], a[min]);
+        swap_panel(a[i], a[min],i,min);
     }
 }
 
 void Sort::Bubble_Sort(std::vector<wxPanel*> &a) {
     for (int i = a.size() - 1; i > 0; i--) {
         for (int j = 1; j <= i; ++j)
-            if (a[j - 1]->GetClientSize().GetHeight() > a[j]->GetClientSize().GetHeight()) swap_panel(a[j - 1], a[j]);
+            if (a[j - 1]->GetClientSize().GetHeight() > a[j]->GetClientSize().GetHeight()) swap_panel(a[j - 1], a[j],j-1,j);
     }
 }
 
@@ -62,6 +123,7 @@ void SetHeightPanel(wxPanel* &a, int h) {
     a->SetPosition(wxPoint(ax, ay));
     a->SetSize(wxSize(w, h));
 }
+
 void Merge_Arr(std::vector<wxPanel*>& a, int l1, int r1, int l2, int r2) {
     std::vector<int> L(r1 - l1 + 1);
     std::vector<int> R(r2 - l2 + 1);
@@ -115,7 +177,7 @@ int Partition(std::vector<wxPanel*>& a, int l, int r) {
         do {
             --j;
         } while (a[j]->GetClientSize().GetHeight() > p);
-        if (i < j) swap_panel(a[i], a[j]);
+        if (i < j) swap_panel(a[i], a[j],i,j);
         else return j;
     }
 }
@@ -126,3 +188,4 @@ void Sort::Quick_Sort(std::vector<wxPanel*>& a, int l, int r) {
         Quick_Sort(a, pivot + 1, r);
     }
 }
+//TODO: làm lại hàm merge , tạo lại visually, tạo thêm thuộc tính thời gian 

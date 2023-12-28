@@ -79,7 +79,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
     spinCol->SetFont(wxFont(12, wxFONTFAMILY_DECORATIVE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
 
 
-    wxButton* button = new wxButton(panelsub2, wxID_ANY, "Creat", wxPoint(188, 80), wxSize(48, 26));
+    wxButton* button = new wxButton(panelsub2, wxID_ANY, "Create", wxPoint(188, 80), wxSize(58, 26));
     button->SetFont(wxFont(10, wxFONTFAMILY_DECORATIVE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
     button->Bind(wxEVT_BUTTON, &MainFrame::ButtonCreat, this);
 
