@@ -148,9 +148,8 @@ void MainFrame::ButtonStart(wxCommandEvent& event)
         sortpanel.Merge_Sort(colpanel,0, spinCol->GetValue()-1);
     }
     else if (index == 4) {
+        std::cout << "1234";
         sortpanel.Quick_Sort(colpanel, 0, spinCol->GetValue() - 1);
     }
-
-
     wxLogMessage(" %s (Index: %d)", select, index);
 }

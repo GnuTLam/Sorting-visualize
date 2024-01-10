@@ -38,6 +38,7 @@ void Animation::Move_panel(wxPanel* panel, wxPoint destination) {
     }
 
 }
+
 void Animation::Set_border(Border &a,wxPanel* panel, int xstart, int xend) {
 
     a.panel[1] = new wxPanel(panel, wxID_ANY, wxPoint(xstart, a.y), wxSize(2, a.h));

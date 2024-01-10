@@ -68,7 +68,7 @@ void swap_panel(wxPanel* &a, wxPanel* &b, int indexa, int indexb, int time=5) {
             a->Refresh();
             b->SetPosition(wxPoint(xB, yB));
             b->Refresh();
-            wxMilliSleep(time);
+            //wxMilliSleep(time);
         }
         
     }
@@ -88,13 +88,13 @@ void swap_panel(wxPanel* &a, wxPanel* &b, int indexa, int indexb, int time=5) {
             a->Refresh();
             b->SetPosition(wxPoint(xB, yB));
             b->Refresh();
-            wxMilliSleep(time);
+            //wxMilliSleep(time);
         }
     }
     ttl.Setcolor_panel(a, colora);
     ttl.Setcolor_panel(b, colorb);
     std::swap(a, b);
-    wxMilliSleep(time*15);
+    //wxMilliSleep(time*15);
 }
 
 void insert_panel(std::vector<wxPanel*>& a, int i, int pos) {
@@ -218,10 +218,10 @@ void Sort::Merge_Sort(std::vector<wxPanel*>& a, int l, int r) {
 
 //Quick sort
 Animation::Border border1;
-int Partition(std::vector<wxPanel*>& a, int l, int r) {
+int Partition(std::vector<wxPanel*>& a, int l, int r) {  
     int p = a[l]->GetClientSize().GetHeight();
     ttl.Setcolor_panel(a[l], wxColor(25, 200, 25));
-    wxMilliSleep(500);
+    //wxMilliSleep(500);
     int i = l + 1, j = r;
 
     while (i <= j) {
@@ -235,11 +235,11 @@ int Partition(std::vector<wxPanel*>& a, int l, int r) {
     }
     swap_panel(a[l], a[j], l, j, 3);
     ttl.Setcolor_panel(a[j], wxColor(22, 26, 48));
-    wxMilliSleep(1000);
+    //wxMilliSleep(1000);
     return j;
 }
 
-void Sort::Quick_Sort(std::vector<wxPanel*>& a, int l, int r) {
+/*void Sort::Quick_Sort(std::vector<wxPanel*>& a, int l, int r) {
     std::stack<std::pair<int, int>> stack;
     stack.push(std::make_pair(l, r));
 
@@ -258,5 +258,16 @@ void Sort::Quick_Sort(std::vector<wxPanel*>& a, int l, int r) {
             stack.push(std::make_pair(current.first, pivot-1));
             stack.push(std::make_pair(pivot + 1, current.second));
         }
+    }
+}*/
+void Sort::Quick_Sort(std::vector<wxPanel*>& a, int l, int r) {
+    if (l < r) {
+        int start = a[l]->GetPosition().x - 4;
+        int end = a[r]->GetPosition().x + a[0]->GetClientSize().GetWidth();
+        ttl.Set_border(border1, paneltmp, start, end);
+        int pivot = Partition(a, l, r);
+        ttl.Delete_border(border1);
+        Quick_Sort(a, l, pivot-1);
+        Quick_Sort(a, pivot + 1, r);
     }
 }
