@@ -1,5 +1,15 @@
-﻿#include "Sort.h"
+﻿
 #include <wx/wx.h>
+#include <vector>
+#include <stack>
+#include "Sort.h"
+#include "Animation.h"
+
+wxPanel* paneltmp;
+void Sort::SetPanelSub1(wxPanel* panelsub1) {
+    paneltmp = panelsub1;
+}
+
 void change_colour_red(wxPanel*& a, wxPanel*& b) {
     a->SetBackgroundColour(wxColour(0xe8, 0x35, 0x50));
     b->SetBackgroundColour(wxColour(0xe8, 0x35, 0x50));
@@ -28,11 +38,12 @@ void change_colour_nor(wxPanel*& a, wxPanel*& b) {
     b->Refresh();
     b->Update();
 }
+Animation ttl;
 
-
-
-void swap_panel(wxPanel* &a, wxPanel* &b, int indexa, int indexb) {
+void swap_panel(wxPanel* &a, wxPanel* &b, int indexa, int indexb, int time=5) {
     int plus = abs(indexa - indexb);
+    wxColor colora = a->GetBackgroundColour();
+    wxColor colorb = b->GetBackgroundColour();
     change_colour_red(a, b);
     wxPoint pointA = a->GetPosition();
     wxPoint pointB = b->GetPosition();
@@ -41,7 +52,6 @@ void swap_panel(wxPanel* &a, wxPanel* &b, int indexa, int indexb) {
     int xB = pointB.x;
     int yB = pointB.y;
     int sA = xA, sB = xB;
-    
     if (sA > sB) {
         int dis = sA - sB;
         for (int i = 0; i < dis; i += plus) {
@@ -58,7 +68,7 @@ void swap_panel(wxPanel* &a, wxPanel* &b, int indexa, int indexb) {
             a->Refresh();
             b->SetPosition(wxPoint(xB, yB));
             b->Refresh();
-            wxMilliSleep(20);
+            wxMilliSleep(time);
         }
         
     }
@@ -78,25 +88,62 @@ void swap_panel(wxPanel* &a, wxPanel* &b, int indexa, int indexb) {
             a->Refresh();
             b->SetPosition(wxPoint(xB, yB));
             b->Refresh();
-            wxMilliSleep(20);
+            wxMilliSleep(time);
         }
     }
+    ttl.Setcolor_panel(a, colora);
+    ttl.Setcolor_panel(b, colorb);
     std::swap(a, b);
-    change_colour_nor(a, b);
-    wxMilliSleep(100);
+    wxMilliSleep(time*15);
 }
 
-
+void insert_panel(std::vector<wxPanel*>& a, int i, int pos) {
+    //lặp tăng x cho đến khi nào a[i-1](x) = a[i](x) ban đầu
+    int ax = a[i]->GetPosition().x;
+    int bx = a[i-1]->GetPosition().x;// tọa độ x của a[i-1];
+    int cx = a[pos]->GetPosition().x;// tọa độ x của a[pos];
+    int dis = ax - bx;
+   
+    wxMilliSleep(500);
+    for (int k = 0; k < dis; ++k) {
+        for (int j = pos; j < i; ++j) {
+            a[j]->SetPosition(wxPoint(a[j]->GetPosition().x + 1, a[j]->GetPosition().y));
+            a[j]->Refresh();
+        }// có thể tách ra làm 2 for để đẹp( nếu cần)
+        if (ax > cx) {
+            a[i]->SetPosition(wxPoint(ax, a[i]->GetPosition().y));
+            a[i]->Refresh();
+            ax -= (i - pos);
+        }
+        else if(ax<cx) {
+            a[i]->SetPosition(wxPoint(cx, a[i]->GetPosition().y));
+            a[i]->Refresh();
+        }
+    }
+    //sắp xếp lại các con trỏ
+    for (int j = 0; j < (i - pos); ++j)
+        std::swap(a[i], a[j+pos]);
+}
+//Insertion sort
 void Sort::Insertion_Sort(std::vector<wxPanel*> &a) {
     for (int i = 1; i < a.size(); ++i) {
         int pos = i;
-        while (pos > 0 && a[pos]->GetClientSize().GetHeight() < a[pos - 1]->GetClientSize().GetHeight()) {          
-            swap_panel(a[pos], a[pos - 1],pos, pos-1);
-            pos--;
+        wxPanel* tmp = a[i];
+        while (pos > 0 && tmp->GetClientSize().GetHeight() < a[pos - 1]->GetClientSize().GetHeight())pos--;        
+        ani.Setcolor_panel(a[i],wxColor(0xe8, 0x35, 0x50));
+        for (int j = pos; j < i; j++) {
+            ani.Setcolor_panel(a[j], wxColor(97, 255, 217));
+        }
+        wxMilliSleep(500);
+        insert_panel(a, i, pos);
+        wxMilliSleep(500);
+        for (int j = pos; j <= i; j++) {
+            ani.Setcolor_panel(a[j], wxColor(22, 26, 48));
         }
     }
 }
 
+//Selection sort
 void Sort::Selection_Sort(std::vector<wxPanel*> &a) {
     int min;
     for (int i = 0; i < a.size() - 1; ++i) {
@@ -107,14 +154,16 @@ void Sort::Selection_Sort(std::vector<wxPanel*> &a) {
         swap_panel(a[i], a[min],i,min);
     }
 }
-
+ 
+//Bubble sort
 void Sort::Bubble_Sort(std::vector<wxPanel*> &a) {
     for (int i = a.size() - 1; i > 0; i--) {
         for (int j = 1; j <= i; ++j)
-            if (a[j - 1]->GetClientSize().GetHeight() > a[j]->GetClientSize().GetHeight()) swap_panel(a[j - 1], a[j],j-1,j);
+            if (a[j - 1]->GetClientSize().GetHeight() > a[j]->GetClientSize().GetHeight()) swap_panel(a[j - 1], a[j],j-1,j,3);
     }
 }
 
+//Merge sort
 void SetHeightPanel(wxPanel* &a, int h) {
     int w = a->GetClientSize().GetWidth();
     int ax = a->GetPosition().x;
@@ -167,25 +216,47 @@ void Sort::Merge_Sort(std::vector<wxPanel*>& a, int l, int r) {
     }
 }
 
+//Quick sort
+Animation::Border border1;
 int Partition(std::vector<wxPanel*>& a, int l, int r) {
     int p = a[l]->GetClientSize().GetHeight();
-    int i = l - 1, j = r + 1;
-    while (true) {
-        do {
-            ++i;
-        } while (a[i]->GetClientSize().GetHeight() < p);
-        do {
-            --j;
-        } while (a[j]->GetClientSize().GetHeight() > p);
-        if (i < j) swap_panel(a[i], a[j],i,j);
-        else return j;
+    ttl.Setcolor_panel(a[l], wxColor(25, 200, 25));
+    wxMilliSleep(500);
+    int i = l + 1, j = r;
+
+    while (i <= j) {
+        while (i <= r && a[i]->GetClientSize().GetHeight() < p) i++;
+        while (j >= l && a[j]->GetClientSize().GetHeight() > p) j--;
+        if (i < j) {
+            swap_panel(a[i], a[j],i, j, 3);
+            i++;
+            j--;
+        }
     }
+    swap_panel(a[l], a[j], l, j, 3);
+    ttl.Setcolor_panel(a[j], wxColor(22, 26, 48));
+    wxMilliSleep(1000);
+    return j;
 }
+
 void Sort::Quick_Sort(std::vector<wxPanel*>& a, int l, int r) {
-    if (l < r) {
-        int pivot = Partition(a, l, r);
-        Quick_Sort(a, l, pivot);
-        Quick_Sort(a, pivot + 1, r);
+    std::stack<std::pair<int, int>> stack;
+    stack.push(std::make_pair(l, r));
+
+    while (!stack.empty()) {
+        std::pair<int, int> current = stack.top();
+        stack.pop();
+
+        int start = a[current.first]->GetPosition().x - 4;
+        int end = a[current.second]->GetPosition().x + a[1]->GetClientSize().GetWidth();
+
+        if (current.first < current.second) {
+            ttl.Set_border(border1,paneltmp, start, end);
+            int pivot = Partition(a, current.first, current.second);
+            ttl.Delete_border(border1);
+
+            stack.push(std::make_pair(current.first, pivot-1));
+            stack.push(std::make_pair(pivot + 1, current.second));
+        }
     }
 }
-//TODO: làm lại hàm merge , tạo lại visually, tạo thêm thuộc tính thời gian 

@@ -75,7 +75,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
     //2.Generate column
     wxStaticText* textColumn = new wxStaticText(panelsub2, wxID_ANY, "Column:", wxPoint(25, 85));
     textColumn->SetFont(wxFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
-    spinCol = new wxSpinCtrl(panelsub2, wxID_ANY, "10 - 50", wxPoint(89, 80), wxSize(94, 24), wxSP_ARROW_KEYS, 10, 50);
+    spinCol = new wxSpinCtrl(panelsub2, wxID_ANY, "10 - 50", wxPoint(89, 80), wxSize(94, 24), wxSP_ARROW_KEYS, 10, 500);
     spinCol->SetFont(wxFont(12, wxFONTFAMILY_DECORATIVE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
 
 

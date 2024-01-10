@@ -14,6 +14,5 @@ private:
 	wxSpinCtrl* spinCol;
 	wxChoice* choice;
 	std::vector<wxPanel*> colpanel;
-	Sort sortpanel;
 };
 
