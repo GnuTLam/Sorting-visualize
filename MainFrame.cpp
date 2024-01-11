@@ -51,7 +51,6 @@ void align_frame(std::vector<int>& cc, std::vector<int>& cr, std::vector<int>& k
         std::swap(cr[i], cr[k]);
         std::swap(kc[i], kc[k]);
     }
-
 }
 
 MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
@@ -75,7 +74,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
     //2.Generate column
     wxStaticText* textColumn = new wxStaticText(panelsub2, wxID_ANY, "Column:", wxPoint(25, 85));
     textColumn->SetFont(wxFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
-    spinCol = new wxSpinCtrl(panelsub2, wxID_ANY, "10 - 50", wxPoint(89, 80), wxSize(94, 24), wxSP_ARROW_KEYS, 10, 50);
+    spinCol = new wxSpinCtrl(panelsub2, wxID_ANY, "10 - 50", wxPoint(89, 80), wxSize(94, 24), wxSP_ARROW_KEYS, 10, 500);
     spinCol->SetFont(wxFont(12, wxFONTFAMILY_DECORATIVE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
 
 
@@ -98,7 +97,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
     buttonstart->Bind(wxEVT_BUTTON, &MainFrame::ButtonStart, this);
 
 }
-
+double unit;
 void MainFrame::ButtonCreat(wxCommandEvent& event) {
     int value = spinCol->GetValue();
 
@@ -110,7 +109,7 @@ void MainFrame::ButtonCreat(wxCommandEvent& event) {
     }
     colpanel.clear();
 
-    double unit = 650.0 / value*0.82;
+    unit = 650.0 / value *0.82;
     std::vector<int> cc, cr, kc;
     align_frame(cc, cr, kc, value);
     for (int i = 1; i <= value; i++)
@@ -132,6 +131,7 @@ void MainFrame::ButtonStart(wxCommandEvent& event)
 {
     Sort sortpanel;
     sortpanel.SetPanelSub1(panelsub1);
+    sortpanel.SetUnit(unit);
     wxString select=choice->GetStringSelection();
     int index = choice->GetSelection();
     
@@ -148,7 +148,6 @@ void MainFrame::ButtonStart(wxCommandEvent& event)
         sortpanel.Merge_Sort(colpanel,0, spinCol->GetValue()-1);
     }
     else if (index == 4) {
-        std::cout << "1234";
         sortpanel.Quick_Sort(colpanel, 0, spinCol->GetValue() - 1);
     }
     wxLogMessage(" %s (Index: %d)", select, index);
