@@ -308,3 +308,6 @@ void Sort::Quick_Sort(std::vector<wxPanel*>& a, int l, int r) {
         Quick_Sort(a, pivot + 1, r);
     }
 }
+
+//TODO: Thiết kế lại hiệu ứng hàm merge
+//TODO: Sửa lại hiệu ứng move
