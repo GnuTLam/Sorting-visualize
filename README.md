@@ -13,7 +13,7 @@ Sản phẩm được xây dựng nhằm trực quan hóa các thuật toán s�
 
 ## Sản phẩm 
 ### Phiên bản thử nghiệm
-Các bạn có thể sử dụng  [Phiên bản thử nghiệm](https://www.facebook.com/messages/t/5286010378129361) tại đây.  
+Các bạn có thể sử dụng  [Phiên bản thử nghiệm](https://drive.google.com/file/d/1mwL300Vk3RgJhgddQshC2IAMaayv4Oig/view?usp=drive_link) tại đây.  
 *Lưu ý: chương trình chỉ chạy trên Window*
 
 ### Mô tả 
@@ -45,6 +45,6 @@ Cuối cùng ấn nút "Start" để bắt đầu.
 ## Tùy chỉnh mã nguồn
 #### Thực hiện cài đặt frame work: [WxWIDGET](https://wxwidgets.org/downloads/)
 #### Thực hiện build trên máy : [Tham khảo ](https://www.youtube.com/watch?v=ONYW3hBbk-8)
-
+#### Lấy mã nguồn và thực hiện tùy chỉnh.
 ## Liên hệ 
 _Gmail: trantunglamhsgs@gmail.com_
