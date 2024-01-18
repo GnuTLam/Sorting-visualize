@@ -2,7 +2,7 @@
 #include "Sort.h"
 #include <wx/wx.h>
 #include <wx/spinctrl.h>
-
+double unit;
 void align_frame(std::vector<int>& cc, std::vector<int>& cr, std::vector<int>& kc, int value) {
     cc.resize(value + 1);
     cr.resize(value + 1);
@@ -97,7 +97,9 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
     buttonstart->Bind(wxEVT_BUTTON, &MainFrame::ButtonStart, this);
 
 }
-double unit;
+
+
+// Khởi tạo sự kiện ấn nút Create
 void MainFrame::ButtonCreat(wxCommandEvent& event) {
     int value = spinCol->GetValue();
 
@@ -127,6 +129,8 @@ void MainFrame::ButtonCreat(wxCommandEvent& event) {
 
 }
 
+
+// Khởi tạo sự kiến ấn nút Start
 void MainFrame::ButtonStart(wxCommandEvent& event)
 {
     Sort sortpanel;
@@ -150,5 +154,7 @@ void MainFrame::ButtonStart(wxCommandEvent& event)
     else if (index == 4) {
         sortpanel.Quick_Sort(colpanel, 0, spinCol->GetValue() - 1);
     }
+
+    //thông báo kết thúc
     wxLogMessage(" %s (Index: %d)", select, index);
 }

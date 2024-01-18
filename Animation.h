@@ -3,7 +3,6 @@
 class Animation 
 {
 public:
-	//Set color
 	void Setcolor_panel(wxPanel* a, wxColor);
 	void Move_panel(wxPanel* a, wxPoint);
 	void SetHigh_panel(wxPanel* a, int h);

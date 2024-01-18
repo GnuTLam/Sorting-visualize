@@ -4,12 +4,15 @@
 #include <wx/graphics.h>
 #include <wx/font.h>
 
+// Thay đổi màu của cột(panel)
 void Animation::Setcolor_panel(wxPanel* a, wxColor color) {
     a->SetBackgroundColour(color);
     a->Refresh();
     a->Update();
 }
 
+
+// Di chuyển cột(panel) đến vị trí đích
 void Animation::Move_panel(wxPanel* panel, wxPoint destination) {
     wxPoint currentPosition = panel->GetPosition();
     // Tính toán khoảng cách cần di chuyển
@@ -36,6 +39,7 @@ void Animation::Move_panel(wxPanel* panel, wxPoint destination) {
     panel->Update();
 }
 
+// Đóng khung viền với độ rộng xstart->xend, chiều dài là chiều cao cao nhất của cột
 void Animation::Set_border(Border &a,wxPanel* panel, int xstart, int xend) {
 
     a.panel[1] = new wxPanel(panel, wxID_ANY, wxPoint(xstart, a.y), wxSize(2, a.h));
@@ -60,11 +64,14 @@ void Animation::Set_border(Border &a,wxPanel* panel, int xstart, int xend) {
     a.panel[1]->Update();
 }
 
+
+// Xóa khung
 void Animation::Delete_border(Border& a) {
     for (int i = 1; i <= 4; ++i) 
             a.panel[i]->Destroy();
 }
 
+// Gán nhãn cho cột(panel)
 void Animation::Setlabel_panel(wxPanel*& panel, int label) {
     int h = panel->GetClientSize().GetWidth();
     wxString textlabel = wxString::Format("%d", label);
@@ -75,6 +82,7 @@ void Animation::Setlabel_panel(wxPanel*& panel, int label) {
     panel->Update();
 }
 
+// Thay đổi chiều cao cột(panel)
 void Animation::SetHigh_panel(wxPanel* a, int h) {
     wxPoint pos = a->GetPosition();
     wxSize size = a->GetClientSize();
