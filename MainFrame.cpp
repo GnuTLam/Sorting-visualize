@@ -3,7 +3,8 @@
 #include <wx/wx.h>
 #include <wx/spinctrl.h>
 double unit;
-// Hàm khởi tạo các đối tượng cột (panel) với các tham số là chiều cao, chiều rộng, khoảng cách, số lượng.
+
+// Khởi tạo các trường thuộc tính chiều cao, chiều rộng, khoảng cách giữa các cột(panel)
 void align_frame(std::vector<int>& cc, std::vector<int>& cr, std::vector<int>& kc, int value) {
     cc.resize(value + 1);
     cr.resize(value + 1);
@@ -53,7 +54,8 @@ void align_frame(std::vector<int>& cc, std::vector<int>& cr, std::vector<int>& k
     }
 }
 
-// Constructor MainFrame với tham số là tiêu đề của khung chính.
+
+// Hàm khởi tạo khung màn chính
 MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
     panel = new wxPanel(this);
     panel->SetBackgroundColour(wxColour(49, 48, 77));
@@ -75,7 +77,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
     //2.Tạo các cột
     wxStaticText* textColumn = new wxStaticText(panelsub2, wxID_ANY, "Column:", wxPoint(25, 85));
     textColumn->SetFont(wxFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
-    spinCol = new wxSpinCtrl(panelsub2, wxID_ANY, "10", wxPoint(89, 80), wxSize(94, 24), wxSP_ARROW_KEYS, 5, 20,8);
+    spinCol = new wxSpinCtrl(panelsub2, wxID_ANY, "10 - 50", wxPoint(89, 80), wxSize(94, 24), wxSP_ARROW_KEYS, 10, 500);
     spinCol->SetFont(wxFont(12, wxFONTFAMILY_DECORATIVE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
 
 
@@ -99,8 +101,8 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 
 }
 
-// Constructor ButtonCreate với tham số là sự kiện ấn nút Create.
-// Sinh ra các cột(panel) theo số lượng mong muốn.
+
+// Khởi tạo sự kiện ấn nút Create
 void MainFrame::ButtonCreat(wxCommandEvent& event) {
     int value = spinCol->GetValue();
     int x = 20, y;
@@ -112,7 +114,7 @@ void MainFrame::ButtonCreat(wxCommandEvent& event) {
     }
     colpanel.clear();
 
-    // Sinh ra các cột(panel)
+    unit = 650.0 / value *0.82;
     std::vector<int> cc, cr, kc;
     align_frame(cc, cr, kc, value);
     for (int i = 1; i <= value; i++)
@@ -130,8 +132,8 @@ void MainFrame::ButtonCreat(wxCommandEvent& event) {
 }
 
 
-// Constructor ButtonCreate với tham số là sự kiện ấn nút Start.
-// Thực hiện công việc sắp xếp.
+
+// Khởi tạo sự kiến ấn nút Start
 void MainFrame::ButtonStart(wxCommandEvent& event)
 {
     Sort sortpanel;
@@ -156,6 +158,6 @@ void MainFrame::ButtonStart(wxCommandEvent& event)
         sortpanel.Quick_Sort(colpanel, 0, spinCol->GetValue() - 1);
     }
 
-    // Thông báo hoàn tất việc sort
-    wxLogMessage(" DONE \n %s (Index: %d)", select, index);
+    //thông báo kết thúc
+    wxLogMessage(" %s (Index: %d)", select, index);
 }
