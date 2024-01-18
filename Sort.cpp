@@ -1,15 +1,19 @@
-﻿
 #include <wx/wx.h>
 #include <vector>
 #include <stack>
 #include "Sort.h"
 #include "Animation.h"
 
+// Tạo đối các đối tượng để sử dụng các phương thức
+Animation animation_sort;
 wxPanel* paneltmp;
+
 void Sort::SetPanelSub1(wxPanel* panelsub1) {
     paneltmp = panelsub1;
 }
-
+void Sort::SetUnit(double& u) {
+    unit = u;
+}
 void change_colour_red(wxPanel*& a, wxPanel*& b) {
     a->SetBackgroundColour(wxColour(0xe8, 0x35, 0x50));
     b->SetBackgroundColour(wxColour(0xe8, 0x35, 0x50));
@@ -38,13 +42,15 @@ void change_colour_nor(wxPanel*& a, wxPanel*& b) {
     b->Refresh();
     b->Update();
 }
-Animation ttl;
 
+Animation ttl;
 void swap_panel(wxPanel* &a, wxPanel* &b, int indexa, int indexb, int time=5) {
     int plus = abs(indexa - indexb);
     wxColor colora = a->GetBackgroundColour();
     wxColor colorb = b->GetBackgroundColour();
-    change_colour_red(a, b);
+    animation_sort.Setcolor_panel(a, wxColor(0xe8, 0x35, 0x50));
+    animation_sort.Setcolor_panel(b, wxColor(0xe8, 0x35, 0x50));
+    wxMilliSleep(50);
     wxPoint pointA = a->GetPosition();
     wxPoint pointB = b->GetPosition();
     int xA = pointA.x;
@@ -68,7 +74,7 @@ void swap_panel(wxPanel* &a, wxPanel* &b, int indexa, int indexb, int time=5) {
             a->Refresh();
             b->SetPosition(wxPoint(xB, yB));
             b->Refresh();
-            //wxMilliSleep(time);
+            wxMilliSleep(time);
         }
         
     }
@@ -88,20 +94,20 @@ void swap_panel(wxPanel* &a, wxPanel* &b, int indexa, int indexb, int time=5) {
             a->Refresh();
             b->SetPosition(wxPoint(xB, yB));
             b->Refresh();
-            //wxMilliSleep(time);
+            wxMilliSleep(time);
         }
     }
-    ttl.Setcolor_panel(a, colora);
-    ttl.Setcolor_panel(b, colorb);
+    animation_sort.Setcolor_panel(a, colora);
+    animation_sort.Setcolor_panel(b, colorb);
     std::swap(a, b);
-    //wxMilliSleep(time*15);
+    wxMilliSleep(time*15);
 }
 
+//Insertion sort
 void insert_panel(std::vector<wxPanel*>& a, int i, int pos) {
-    //lặp tăng x cho đến khi nào a[i-1](x) = a[i](x) ban đầu
     int ax = a[i]->GetPosition().x;
-    int bx = a[i-1]->GetPosition().x;// tọa độ x của a[i-1];
-    int cx = a[pos]->GetPosition().x;// tọa độ x của a[pos];
+    int bx = a[i-1]->GetPosition().x;
+    int cx = a[pos]->GetPosition().x;
     int dis = ax - bx;
    
     wxMilliSleep(500);
@@ -109,7 +115,7 @@ void insert_panel(std::vector<wxPanel*>& a, int i, int pos) {
         for (int j = pos; j < i; ++j) {
             a[j]->SetPosition(wxPoint(a[j]->GetPosition().x + 1, a[j]->GetPosition().y));
             a[j]->Refresh();
-        }// có thể tách ra làm 2 for để đẹp( nếu cần)
+        }
         if (ax > cx) {
             a[i]->SetPosition(wxPoint(ax, a[i]->GetPosition().y));
             a[i]->Refresh();
@@ -120,11 +126,10 @@ void insert_panel(std::vector<wxPanel*>& a, int i, int pos) {
             a[i]->Refresh();
         }
     }
-    //sắp xếp lại các con trỏ
+    
     for (int j = 0; j < (i - pos); ++j)
         std::swap(a[i], a[j+pos]);
 }
-//Insertion sort
 void Sort::Insertion_Sort(std::vector<wxPanel*> &a) {
     for (int i = 1; i < a.size(); ++i) {
         int pos = i;
@@ -132,7 +137,7 @@ void Sort::Insertion_Sort(std::vector<wxPanel*> &a) {
         while (pos > 0 && tmp->GetClientSize().GetHeight() < a[pos - 1]->GetClientSize().GetHeight())pos--;        
         ani.Setcolor_panel(a[i],wxColor(0xe8, 0x35, 0x50));
         for (int j = pos; j < i; j++) {
-            ani.Setcolor_panel(a[j], wxColor(97, 255, 217));
+            ani.Setcolor_panel(a[j], wxColor(31, 250, 61));
         }
         wxMilliSleep(500);
         insert_panel(a, i, pos);
@@ -164,28 +169,62 @@ void Sort::Bubble_Sort(std::vector<wxPanel*> &a) {
 }
 
 //Merge sort
-void SetHeightPanel(wxPanel* &a, int h) {
-    int w = a->GetClientSize().GetWidth();
-    int ax = a->GetPosition().x;
-    int ay = 570-h;
-    a->SetSize(wxSize(0, 0));
-    a->SetPosition(wxPoint(ax, ay));
-    a->SetSize(wxSize(w, h));
-}
+void Sort::Merge_Arr(std::vector<wxPanel*>& a, int l1, int r1, int l2, int r2) {
+    int width=a[0]->GetClientSize().GetWidth();
+    std::vector<Animation::Columnb> L(r1 - l1 + 1);
+    std::vector<Animation::Columnb> R(r2 - l2 + 1);
 
-void Merge_Arr(std::vector<wxPanel*>& a, int l1, int r1, int l2, int r2) {
-    std::vector<int> L(r1 - l1 + 1);
-    std::vector<int> R(r2 - l2 + 1);
+    for (int i = 0; i < L.size(); ++i) {
+        L[i].panel = new wxPanel(paneltmp, wxID_ANY, a[l1+i]->GetPosition(), a[l1+i]->GetClientSize());
+        ani.Setcolor_panel(L[i].panel, wxColor(22, 26, 48));
+        L[i].label = a[l1+i]->GetClientSize().GetHeight();     
+    }
+    
+    for (int i = 0; i < R.size(); ++i) {
+        R[i].panel = new wxPanel(paneltmp, wxID_ANY, a[l2+i]->GetPosition(), a[l2+i]->GetClientSize());
+        ani.Setcolor_panel(R[i].panel, wxColor(22, 26, 48));
+        R[i].label = a[l2+i]->GetClientSize().GetHeight();
+    }
+    
+    wxStaticText* text1 = new wxStaticText(paneltmp, wxID_ANY, " Array 1:", wxPoint(18,30), wxSize(20, 100), wxALIGN_CENTER);
+    text1->SetFont(wxFont(16, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
+    wxStaticText* text2 = new wxStaticText(paneltmp, wxID_ANY, " Array 2:", wxPoint(18, 90), wxSize(20, 100), wxALIGN_CENTER);
+    text2->SetFont(wxFont(16, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
+    paneltmp->Update();
 
-    for (int i = 0; i < L.size(); ++i)
-        L[i] = a[l1 + i]->GetClientSize().GetHeight();
-    for (int i = 0; i < R.size(); ++i)
-        R[i] = a[l2 + i]->GetClientSize().GetHeight();
+    wxMilliSleep(500);
+
+    for (int i = 0; i < L.size(); ++i){
+        ani.SetHigh_panel(a[l1+i], 0);
+        wxMilliSleep(60);
+        ani.SetHigh_panel(L[i].panel, width);
+        ani.Setlabel_panel(L[i].panel, round(L[i].label / unit));
+    }
+    
+    for (int i = 0; i < L.size(); ++i) {
+        ani.Move_panel(L[i].panel, wxPoint(120 + i * (10 + L[i].panel->GetClientSize().GetWidth()), 15));
+    }
+    wxMilliSleep(500);
+    for (int i = 0; i < R.size(); ++i) {
+        ani.SetHigh_panel(a[l2 + i], 0);
+        wxMilliSleep(60);
+        ani.SetHigh_panel(R[i].panel, width);
+        ani.Setlabel_panel(R[i].panel, round(R[i].label / unit));
+    }
+
+    for (int i = 0; i < R.size(); ++i) {
+        ani.Move_panel(R[i].panel, wxPoint(120 + i * (10 + R[i].panel->GetClientSize().GetWidth()), 75));
+    }
+    wxMilliSleep(500);
+
 
     int i = 0, j = 0, k = l1;
     while (i < L.size() && j < R.size()) {
-        if (L[i] < R[j]) {
-            SetHeightPanel(a[k], L[i]);
+        if (L[i].label < R[j].label) {
+            ani.Move_panel(L[i].panel, wxPoint(a[k]->GetPosition().x, a[k]->GetPosition().y - a[k]->GetClientSize().GetWidth()));
+            ani.SetHigh_panel(a[k], L[i].label);
+            L[i].panel->Destroy();
+            a[k]->Update();
             i++;
         }
         else {
@@ -194,18 +233,26 @@ void Merge_Arr(std::vector<wxPanel*>& a, int l1, int r1, int l2, int r2) {
         }
         k++;
     }
-
     while (j < R.size()) {
-        SetHeightPanel(a[k], R[j]);
+        ani.Move_panel(R[j].panel, wxPoint(a[k]->GetPosition().x, a[k]->GetPosition().y - a[k]->GetClientSize().GetWidth()));
+        ani.SetHigh_panel(a[k], R[j].label);
+        R[j].panel->Destroy();
+        a[k]->Update();
         j++;
         k++;
     }
-
     while (i < L.size()) {
-        SetHeightPanel(a[k], L[i]);
+        ani.Move_panel(L[i].panel, wxPoint(a[k]->GetPosition().x, a[k]->GetPosition().y - a[k]->GetClientSize().GetWidth()));
+        ani.SetHigh_panel(a[k], L[i].label);
+        L[i].panel->Destroy();
+        a[k]->Update();
         i++;
         k++;
     }
+    L.clear();
+    R.clear();
+    text1->Destroy();
+    text2->Destroy();
 }
 void Sort::Merge_Sort(std::vector<wxPanel*>& a, int l, int r) {
     if (l < r) {
@@ -217,11 +264,13 @@ void Sort::Merge_Sort(std::vector<wxPanel*>& a, int l, int r) {
 }
 
 //Quick sort
-Animation::Border border1;
+Animation::Border border1; // Tạo đối tượng Struct Border trong lớp Animation
+
+//Phân hoạch Partition theo ý tưởng Hoare.
 int Partition(std::vector<wxPanel*>& a, int l, int r) {  
     int p = a[l]->GetClientSize().GetHeight();
-    ttl.Setcolor_panel(a[l], wxColor(25, 200, 25));
-    //wxMilliSleep(500);
+    animation_sort.Setcolor_panel(a[l], wxColor(25, 200, 25));
+    wxMilliSleep(300);
     int i = l + 1, j = r;
 
     while (i <= j) {
@@ -234,39 +283,18 @@ int Partition(std::vector<wxPanel*>& a, int l, int r) {
         }
     }
     swap_panel(a[l], a[j], l, j, 3);
-    ttl.Setcolor_panel(a[j], wxColor(22, 26, 48));
-    //wxMilliSleep(1000);
+    animation_sort.Setcolor_panel(a[j], wxColor(22, 26, 48));
+    wxMilliSleep(600);
     return j;
 }
-
-/*void Sort::Quick_Sort(std::vector<wxPanel*>& a, int l, int r) {
-    std::stack<std::pair<int, int>> stack;
-    stack.push(std::make_pair(l, r));
-
-    while (!stack.empty()) {
-        std::pair<int, int> current = stack.top();
-        stack.pop();
-
-        int start = a[current.first]->GetPosition().x - 4;
-        int end = a[current.second]->GetPosition().x + a[1]->GetClientSize().GetWidth();
-
-        if (current.first < current.second) {
-            ttl.Set_border(border1,paneltmp, start, end);
-            int pivot = Partition(a, current.first, current.second);
-            ttl.Delete_border(border1);
-
-            stack.push(std::make_pair(current.first, pivot-1));
-            stack.push(std::make_pair(pivot + 1, current.second));
-        }
-    }
-}*/
+// Thực hiện Quick sort
 void Sort::Quick_Sort(std::vector<wxPanel*>& a, int l, int r) {
     if (l < r) {
         int start = a[l]->GetPosition().x - 4;
         int end = a[r]->GetPosition().x + a[0]->GetClientSize().GetWidth();
-        ttl.Set_border(border1, paneltmp, start, end);
+        animation_sort.Set_border(border1, paneltmp, start, end);
         int pivot = Partition(a, l, r);
-        ttl.Delete_border(border1);
+        animation_sort.Delete_border(border1);
         Quick_Sort(a, l, pivot-1);
         Quick_Sort(a, pivot + 1, r);
     }
