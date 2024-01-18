@@ -3,6 +3,8 @@
 #include <wx/wx.h>
 #include <wx/spinctrl.h>
 double unit;
+
+// Khởi tạo các trường thuộc tính chiều cao, chiều rộng, khoảng cách giữa các cột(panel)
 void align_frame(std::vector<int>& cc, std::vector<int>& cr, std::vector<int>& kc, int value) {
     cc.resize(value + 1);
     cr.resize(value + 1);
@@ -53,6 +55,8 @@ void align_frame(std::vector<int>& cc, std::vector<int>& cr, std::vector<int>& k
     }
 }
 
+
+// Hàm khởi tạo khung màn chính
 MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
     panel = new wxPanel(this);
     panel->SetBackgroundColour(wxColour(49, 48, 77));
